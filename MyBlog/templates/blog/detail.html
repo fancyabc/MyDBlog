@@ -15,12 +15,53 @@
     <div class="row">
         <!-- 标题及作者 -->
         <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
-        <div class="col-12 alert alert-success">作者：{{ article.author }}</div>
+        <div class="col-12 alert alert-success">作者：{{ article.author }}
+            <a href="#" onclick="confirm_safe_delete()"> 删除文章 </a>
+            <!-- 新增一个隐藏的表单,防范csrf -->
+            <form
+                  style="display:none;"
+                  id="safe_delete"
+                  action="{% url 'blog:article_safe_delete' article.id %}"
+                  method="POST"
+                  >
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+        </div>
         <!-- 文章正文 -->
         <div class="col-12">
             <p>{{ article.body|safe }}</p>
         </div>
     </div>
 </div>
+
+<script>
+    // 删除文章的函数
+    function confirm_delete() {
+        // 调用layer弹窗组件
+        layer.open({
+            // 弹窗标题
+            title: "确认删除",
+            // 正文
+            content: "确认删除这篇文章吗？",
+            // 点击确定按钮后调用的回调函数
+            yes: function(index, layero) {
+                // 指定应当前往的 url
+                location.href='{% url "blog:article_delete" article.id %}'
+            },
+        })
+    }
+
+    function confirm_safe_delete() {
+    layer.open({
+        title: "确认删除",
+        content: "确认删除这篇文章吗？",
+        yes: function(index, layero) {
+            $('form#safe_delete button').click();
+            layer.close(index);
+        }
+    })
+}
+</script>
 
 {% endblock content %}

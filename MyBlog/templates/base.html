@@ -22,7 +22,7 @@
     <!-- 引入注脚 -->
     {% include 'footer.html' %}
     <!-- bootstrap.js 依赖 jquery.js 和popper.js，因此在这里引入 -->
-    <script src="{% static 'jquery/jquery-3.3.1.js' %}"></script>
+    <script src="{% static 'jquery/jquery-3.6.3.js' %}"></script>
 
     <!--
         popper.js 采用 cdn 远程引入，意思是你不需要把它下载到本地。
@@ -33,6 +33,7 @@
 
     <!-- 引入bootstrap的js文件 -->
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
 </body>
 
 </html>
