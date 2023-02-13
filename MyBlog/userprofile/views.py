@@ -78,8 +78,12 @@ def user_delete(request, id):
 def profile_edit(request, id):
     """编辑用户信息"""
     user = User.objects.get(id=id)
-    # user_id 是 OneToOneField 自动生成的字段
-    profile = Profile.objects.get(user_id=id)
+    # # user_id 是 OneToOneField 自动生成的字段
+    # profile = Profile.objects.get(user_id=id)
+    if Profile.objects.filter(id=id).exists():
+        profile = Profile.objects.get(user_id=id)
+    else:
+        profile = Profile.objects.create(user=user)
 
     if request.method == 'POST':
         if request.user != user:

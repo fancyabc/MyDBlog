@@ -18,17 +18,17 @@ class Profile(models.Model):
         return 'user {}'.format(self.user.username)
 
 
-# 每个`Profile`模型对应唯一的一个`User`模型，形成了对User的外接扩展，因此你可以在`Profile`添加任何想要的字段。
-# 这种方法的好处是不需要对`User`进行任何改动，从而拥有完全自定义的数据表
-
-# 信号接收函数，每当新建 User 实例时自动调用
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-# 信号接收函数，每当更新 User 实例时自动调用
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# # 每个`Profile`模型对应唯一的一个`User`模型，形成了对User的外接扩展，因此你可以在`Profile`添加任何想要的字段。
+# # 这种方法的好处是不需要对`User`进行任何改动，从而拥有完全自定义的数据表
+#
+# # 信号接收函数，每当新建 User 实例时自动调用
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#
+#
+# # 信号接收函数，每当更新 User 实例时自动调用
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
