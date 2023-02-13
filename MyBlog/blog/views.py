@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 import markdown
 
@@ -33,6 +34,7 @@ def article_detail(request, id):
     return render(request, 'blog/detail.html', context)
 
 
+@login_required(login_url='/userprofile/login/')
 def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
@@ -42,7 +44,7 @@ def article_create(request):
         if article_post_form.is_valid():
             # 保存数据，但暂时不提交到数据库中
             new_article = article_post_form.save(commit=False)
-            new_article.author = User.objects.get(id=1)
+            new_article.author = User.objects.get(id=request.user.id)   # 指定目前登录的用户为作者
             new_article.save()
             return redirect("blog:article_list")
         # 如果数据不合法，返回错误信息
@@ -58,6 +60,7 @@ def article_create(request):
         return render(request, 'blog/create.html', context)
 
 
+@login_required(login_url='/userprofile/login/')
 def article_delete(request, id):
     article = Article.objects.get(id=id)
     article.delete()
@@ -65,6 +68,7 @@ def article_delete(request, id):
 
 
 # 安全删除文章
+@login_required(login_url='/userprofile/login/')
 def article_safe_delete(request, id):
     if request.method == 'POST':
         article = Article.objects.get(id=id)
@@ -74,6 +78,7 @@ def article_safe_delete(request, id):
         return HttpResponse("仅允许post请求")
 
 
+@login_required(login_url='/userprofile/login/')
 def article_update(request, id):
     article = Article.objects.get(id=id)
     # 判断用户是否为 POST 提交表单数据
