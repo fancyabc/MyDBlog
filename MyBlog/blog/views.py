@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 import markdown
 
@@ -12,7 +13,10 @@ from .forms import ArticleForm
 
 def article_list(request):
     # 取出所有博客文章
-    articles = Article.objects.all()
+    article_list = Article.objects.all()
+    paginator = Paginator(article_list, 1)
+    page = request.GET.get('page')
+    articles = paginator.get_page(page)
     # 需要传递给模板（templates）的对象
     context = {'articles': articles }
     # render函数：载入模板，并返回context对象
@@ -22,6 +26,8 @@ def article_list(request):
 def article_detail(request, id):
     # 取出相应的文章
     article = Article.objects.get(id=id)
+    article.view_counts += 1
+    article.save(update_fields=['view_counts'])  # `update_fields=[]`指定了数据库只更新`total_views`字段，优化执行效率。
     article.body = markdown.markdown(article.body,
                                      extensions=[
                                          # 包含 缩写、表格等常用扩展
@@ -81,6 +87,9 @@ def article_safe_delete(request, id):
 @login_required(login_url='/userprofile/login/')
 def article_update(request, id):
     article = Article.objects.get(id=id)
+    if request.user != article.author:
+        return HttpResponse("抱歉，你无权修改这篇文章。")
+
     # 判断用户是否为 POST 提交表单数据
     if request.method == "POST":
         # 将提交的数据赋值到表单实例中
