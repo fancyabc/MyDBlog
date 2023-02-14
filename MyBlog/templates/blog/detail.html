@@ -10,6 +10,9 @@
 <!-- 写入 base.html 中定义的 content -->
 {% block content %}
 
+<script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'prism/prism.css' %}">
+
 <!-- 文章详情 -->
 <div class="container">
     <div class="row">
@@ -74,12 +77,10 @@
                             我也要发言：
                         </strong>
                     </label>
-                    <textarea
-                        type="text"
-                        class="form-control"
-                        id="body"
-                        name="body"
-                        rows="2"></textarea>
+                    <div>
+                        {{ comment_form.media }}
+                        {{ comment_form.body }}
+                    </div>
                 </div>
                 <!-- 提交按钮 -->
                 <button type="submit" class="btn btn-primary ">发送</button>
@@ -108,7 +109,7 @@
                 </span> 时说：
             </p>
             <pre style="font-family: inherit; font-size: 1em;">
-                {{ comment.body }}
+                {{ comment.body|safe }}
             </pre>
         {% endfor %}
     </div>
@@ -144,3 +145,9 @@
 </script>
 
 {% endblock content %}
+
+{% block script %}
+<script>
+    $(".django-ckeditor-widget").removeAttr('style');
+</script>
+{% endblock script %}

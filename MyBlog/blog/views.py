@@ -11,6 +11,7 @@ import markdown
 from .models import Article, ArticleColumn
 from .forms import ArticleForm
 from comment.models import Comment
+from comment.forms import CommentForm
 
 
 def article_list(request):
@@ -71,7 +72,13 @@ def article_detail(request, id):
         ])
     article.body = md.convert(article.body)
 
-    context = {'article': article, 'toc': md.toc, 'comments': comments}
+    comment_form = CommentForm()
+
+    context = {'article': article,
+               'toc': md.toc,
+               'comments': comments,
+               'comment_form': comment_form,
+               }
     # 载入模板，并返回context对象
     return render(request, 'blog/detail.html', context)
 
