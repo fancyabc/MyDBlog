@@ -7,9 +7,10 @@ from django.db.models import Q
 
 import markdown
 
-# 导入数据模型ArticlePost
+
 from .models import Article
 from .forms import ArticleForm
+from comment.models import Comment
 
 
 def article_list(request):
@@ -45,6 +46,8 @@ def article_list(request):
 def article_detail(request, id):
     # 取出相应的文章
     article = Article.objects.get(id=id)
+    # 取出文章评论
+    comments = Comment.objects.filter(article=id)
     article.view_counts += 1
     article.save(update_fields=['view_counts'])  # `update_fields=[]`指定了数据库只更新`total_views`字段，优化执行效率。
     md = markdown.Markdown(
@@ -58,7 +61,7 @@ def article_detail(request, id):
         ])
     article.body = md.convert(article.body)
 
-    context = {'article': article, 'toc': md.toc}
+    context = {'article': article, 'toc': md.toc, 'comments': comments}
     # 载入模板，并返回context对象
     return render(request, 'blog/detail.html', context)
 
