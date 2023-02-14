@@ -54,64 +54,75 @@
 
     <div class="row mt-2">
         {% for article in articles %}
-        <!-- 文章内容 -->
-        <div class="col-12">
-            <!-- 栏目 -->
-            {% if article.column %}
-                <button type="button"
-                    class="btn btn-sm mb-2
-                        {% if article.column.title == 'Django' %}
-                            btn-success
-                        {% elif article.column.title == 'Java' %}
-                            btn-danger
-                        {% elif article.column.title == 'HTML' %}
-                            btn-warning
-                        {% endif %}
-                    ">
-                    {{ article.column }}
-                </button>
+
+            <!-- 标题图 -->
+            {% if article.avatar %}
+                <div class="col-3">
+                    <img src="{{ article.avatar.url }}"
+                         alt="avatar"
+                         style="max-width:100%; border-radius: 20px"
+                    >
+                </div>
             {% endif %}
 
-            <!-- 标签 -->
-            <span>
-                {% for tag in article.tags.all %}
-                    <a href="{% url 'blog:article_list' %}?tag={{ tag }}"
-                       class="badge badge-secondary"
-                    >
-                        {{ tag }}
-                    </a>
-                {% endfor %}
-            </span>
+            <!-- 文章内容 -->
+            <div class="col">
+                <!-- 栏目 -->
+                {% if article.column %}
+                    <button type="button"
+                        class="btn btn-sm mb-2
+                            {% if article.column.title == 'Django' %}
+                                btn-success
+                            {% elif article.column.title == 'Java' %}
+                                btn-danger
+                            {% elif article.column.title == 'HTML' %}
+                                btn-warning
+                            {% endif %}
+                        ">
+                        {{ article.column }}
+                    </button>
+                {% endif %}
 
-            <!-- 标题 -->
-            <h4>
-                <b>
-                    <a href="{% url 'blog:article_detail' article.id %}"
-                       style="color: black;"
-                    >
-                        {{ article.title }}
-                    </a>
-                </b>
-            </h4>
-            <!-- 摘要 -->
-            <div>
-                <p style="color: darkgray">{{ article.body|slice:'100' }}...</p>
+                <!-- 标签 -->
+                <span>
+                    {% for tag in article.tags.all %}
+                        <a href="{% url 'blog:article_list' %}?tag={{ tag }}"
+                           class="badge badge-secondary"
+                        >
+                            {{ tag }}
+                        </a>
+                    {% endfor %}
+                </span>
+
+                <!-- 标题 -->
+                <h4>
+                    <b>
+                        <a href="{% url 'blog:article_detail' article.id %}"
+                           style="color: black;"
+                        >
+                            {{ article.title }}
+                        </a>
+                    </b>
+                </h4>
+                <!-- 摘要 -->
+                <div>
+                    <p style="color: darkgray">{{ article.body|slice:'100' }}...</p>
+                </div>
+                <!-- 注脚 -->
+                <p>
+                    <!-- 附加信息 -->
+                    <span style="color: green;">
+                        {{ article.view_counts }} 浏览&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: blue;">
+                        {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: darkred;">
+                        {{ article.updated|date:'Y-m-d' }} 更新
+                    </span>
+                </p>
             </div>
-            <!-- 注脚 -->
-            <p>
-                <!-- 附加信息 -->
-                <span style="color: green;">
-                    {{ article.view_counts }} 浏览&nbsp;&nbsp;&nbsp;
-                </span>
-                <span style="color: blue;">
-                    {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
-                </span>
-                <span style="color: darkred;">
-                    {{ article.updated|date:'Y-m-d' }} 更新
-                </span>
-            </p>
-            <hr>
-        </div>
+            <hr style="width: 100%;">
         {% endfor %}
 
     </div>

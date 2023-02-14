@@ -80,7 +80,7 @@ def article_detail(request, id):
 def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
-        article_post_form = ArticleForm(data=request.POST)
+        article_post_form = ArticleForm(request.POST, request.FILES)
 
         if article_post_form.is_valid():
             # 保存数据，但暂时不提交到数据库中
@@ -119,7 +119,7 @@ def article_safe_delete(request, id):
     if request.method == 'POST':
         article = Article.objects.get(id=id)
         article.delete()
-        return redirect("article:article_list")
+        return redirect("blog:article_list")
     else:
         return HttpResponse("仅允许post请求")
 
@@ -142,6 +142,11 @@ def article_update(request, id):
                 article.column = ArticleColumn.objects.get(id=request.POST['column'])
             else:
                 article.column = None
+
+            if request.FILES.get('avatar'):
+                article.avatar = request.FILES.get('avatar')
+
+            article.tags.set(*request.POST.get('tags').split(','), clear=True)
             article.save()
 
             return redirect("blog:article_detail", id=id)
@@ -156,7 +161,8 @@ def article_update(request, id):
 
         context = {'article': article,
                    'article_post_form': article_post_form,
-                   'columns': columns
+                   'columns': columns,
+                   'tags': ','.join([x for x in article.tags.names()]),
                    }
         # 将响应返回到模板中
         return render(request, 'blog/update.html', context)
