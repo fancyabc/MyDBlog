@@ -16,30 +16,40 @@ from comment.models import Comment
 def article_list(request):
     search = request.GET.get('search')
     order = request.GET.get('order')
+    column = request.GET.get('column')
+    tag = request.GET.get('tag')
+
+    article_list = Article.objects.all()
+
     if search is not None:
-        if order == 'view_counts':
-            article_list = Article.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__contains=search)
-            ).order_by('-view_counts')
-        else:
-            article_list = Article.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            )
+        article_list = Article.objects.filter(
+            Q(title__icontains=search) |
+            Q(body__contains=search)
+        ).order_by('-view_counts')
     else:
         search = ''
-        if order == 'view_counts':
-            article_list = Article.objects.all().order_by('-view_counts')
-        else:
-            article_list = Article.objects.all()
+
+    if column is not None and column.isdigit():
+        article_list = article_list.filter(column=column)
+
+    if tag and tag != 'None':
+        article_list = article_list.filter(tags__name__in=[tag])
+
+    if order == 'view_counts':
+        # 按热度排序博文
+        article_list = article_list.order_by('-view_counts')
 
     paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
-    # 需要传递给模板（templates）的对象
-    context = {'articles': articles, 'order': order, 'search': search}
-    # render函数：载入模板，并返回context对象
+
+    context = {'articles': articles,
+               'order': order,
+               'search': search,
+               'column': column,
+               'tag': tag,
+               }
+
     return render(request, 'blog/list.html', context)
 
 
