@@ -2,6 +2,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% load my_filter %}
+
 <!-- 写入 base.html 中定义的 title -->
 {% block title %}
     首页
@@ -120,7 +122,7 @@
                     {{ article.comments.count }}&nbsp;&nbsp;&nbsp;
                     <span style="color: blue;">
                         <i class="fa-sharp fa-solid fa-clock"></i>
-                        {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                        {{ article.created|timesince_zh }} 发布&nbsp;&nbsp;&nbsp;
                     </span>
                 </p>
             </div>
