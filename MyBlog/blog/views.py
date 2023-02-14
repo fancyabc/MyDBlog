@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.views import View
 
 import markdown
 
@@ -173,3 +174,12 @@ def article_update(request, id):
                    }
         # 将响应返回到模板中
         return render(request, 'blog/update.html', context)
+
+
+class IncreaseLikesView(View):
+    """点赞数"""
+    def post(self, request, *args, **kwargs):
+        article = Article.objects.get(id=kwargs.get('id'))
+        article.likes += 1
+        article.save()
+        return HttpResponse('success')

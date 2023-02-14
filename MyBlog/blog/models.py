@@ -28,6 +28,7 @@ class Article(models.Model):
     view_counts = models.PositiveIntegerField(default=0)
     tags = TaggableManager(blank=True)
     avatar = models.ImageField(upload_to='article/%Y%m%d/', blank=True)  # 文章标题图
+    likes = models.PositiveIntegerField(default=0)
 
     column = models.ForeignKey(
         ArticleColumn,
