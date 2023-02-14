@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 import markdown
 
@@ -12,17 +13,31 @@ from .forms import ArticleForm
 
 
 def article_list(request):
-    if request.GET.get('order') == 'view_counts':
-        article_list = Article.objects.all().order_by('-view_counts')
-        order = 'view_counts'
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+    if search is not None:
+        if order == 'view_counts':
+            article_list = Article.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__contains=search)
+            ).order_by('-view_counts')
+        else:
+            article_list = Article.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
     else:
-        article_list = Article.objects.all()
-        order = 'normal'
-    paginator = Paginator(article_list, 1)
+        search = ''
+        if order == 'view_counts':
+            article_list = Article.objects.all().order_by('-view_counts')
+        else:
+            article_list = Article.objects.all()
+
+    paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # 需要传递给模板（templates）的对象
-    context = {'articles': articles, 'order': order}
+    context = {'articles': articles, 'order': order, 'search': search}
     # render函数：载入模板，并返回context对象
     return render(request, 'blog/list.html', context)
 
@@ -32,14 +47,18 @@ def article_detail(request, id):
     article = Article.objects.get(id=id)
     article.view_counts += 1
     article.save(update_fields=['view_counts'])  # `update_fields=[]`指定了数据库只更新`total_views`字段，优化执行效率。
-    article.body = markdown.markdown(article.body,
-                                     extensions=[
-                                         # 包含 缩写、表格等常用扩展
-                                         'markdown.extensions.extra',
-                                         # 语法高亮扩展
-                                         'markdown.extensions.codehilite',
-                                     ])
-    context = {'article': article}
+    md = markdown.Markdown(
+        extensions=[
+            # 包含 缩写、表格等常用扩展
+            'markdown.extensions.extra',
+            # 语法高亮扩展
+            'markdown.extensions.codehilite',
+            # 目录扩展
+            'markdown.extensions.toc',
+        ])
+    article.body = md.convert(article.body)
+
+    context = {'article': article, 'toc': md.toc}
     # 载入模板，并返回context对象
     return render(request, 'blog/detail.html', context)
 
