@@ -35,6 +35,9 @@
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'layer/layer.js' %}"></script>
     {% block script %}{% endblock script %}
+
+    <!-- 在jquery后面引入 -->
+    {% include 'back_to_top.html' %}
 </body>
 
 </html>
