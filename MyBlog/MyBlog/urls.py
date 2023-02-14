@@ -18,13 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-import blog
+from notifications import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls', namespace='blog')),
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),
     path('comment/', include('comment.urls', namespace='comment')),
+    path('inbox/notifications/', include(urls, namespace='notifications')),
+    path('notice/', include('notice.urls', namespace='notice')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
