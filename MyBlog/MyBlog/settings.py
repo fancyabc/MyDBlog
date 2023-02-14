@@ -37,13 +37,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
-    'userprofile',
-    'comment',
+    'django.contrib.sites',
+
+    # allauth 相关
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # 添加需要的第三方登录
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.weibo',
+
+    # 第三方扩展
+    'notifications',
     'taggit',
     'ckeditor',
     'mptt',
-    'notifications',
+
+    # 本项目的app
+    'blog',
+    'userprofile',
+    'comment',
     'notice',
 ]
 
@@ -167,3 +181,16 @@ CKEDITOR_CONFIGS = {
 }
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'  # 不加这个，二级评论回复的会报错
+
+
+AUTHENTICATION_BACKENDS = (
+    # 此项使 Django 后台可独立于 allauth 登录
+    'django.contrib.auth.backends.ModelBackend',
+    # 配置 allauth 独有的认证方法，如 email 登录
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# 设置站点
+SITE_ID = 2
+# 重定向 url
+LOGIN_REDIRECT_URL = '/'
