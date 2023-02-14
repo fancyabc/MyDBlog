@@ -12,13 +12,17 @@ from .forms import ArticleForm
 
 
 def article_list(request):
-    # 取出所有博客文章
-    article_list = Article.objects.all()
+    if request.GET.get('order') == 'view_counts':
+        article_list = Article.objects.all().order_by('-view_counts')
+        order = 'view_counts'
+    else:
+        article_list = Article.objects.all()
+        order = 'normal'
     paginator = Paginator(article_list, 1)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # 需要传递给模板（templates）的对象
-    context = {'articles': articles }
+    context = {'articles': articles, 'order': order}
     # render函数：载入模板，并返回context对象
     return render(request, 'blog/list.html', context)
 
