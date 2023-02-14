@@ -146,7 +146,7 @@ def article_update(request, id):
             if request.FILES.get('avatar'):
                 article.avatar = request.FILES.get('avatar')
 
-            article.tags.set(*request.POST.get('tags').split(','), clear=True)
+            article.tags.set(request.POST.get('tags').split(','), clear=True)
             article.save()
 
             return redirect("blog:article_detail", id=id)
