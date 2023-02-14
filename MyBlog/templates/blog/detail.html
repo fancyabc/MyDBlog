@@ -49,11 +49,13 @@
         </div>
 
         <!-- 新增的目录 -->
-        <div class="col-3 mt-4">
-            <h4><strong>目录</strong></h4>
-            <hr>
-            <div>
-                {{ toc|safe }}      <!-- `toc`需要`|safe`标签才能正确渲染 -->
+        <div class="col-3 mt-4" id="sidebar" class="sidebar">
+            <div class="sidebar__inner">
+                <h4><strong>目录</strong></h4>
+                <hr>
+                <div>
+                    {{ toc|safe }}      <!-- `toc`需要`|safe`标签才能正确渲染 -->
+                </div>
             </div>
         </div>
 
@@ -146,8 +148,30 @@
 
 {% endblock content %}
 
+<!-- 粘性侧边栏样式 -->
+<style>
+    .sidebar{
+        will-change: min-height;
+    }
+
+    .sidebar__inner{
+        transform: translate(0, 0);
+        transform: translate3d(0, 0, 0);
+        will-change: position, transform;
+    }
+</style>
+
 {% block script %}
 <script>
     $(".django-ckeditor-widget").removeAttr('style');
+</script>
+
+<!-- 引入粘性侧边栏 -->
+<script src="{% static 'sticky_sidebar/jquery.sticky-sidebar.min.js' %}"></script>
+<script type="text/javascript">
+    $('#sidebar').stickySidebar({
+        topSpacing: 20,
+        bottomSpacing: 20,
+    });
 </script>
 {% endblock script %}
