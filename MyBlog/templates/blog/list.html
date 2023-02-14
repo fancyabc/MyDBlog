@@ -115,13 +115,13 @@
                         <i class="fa-solid fa-eye"></i>
                         {{ article.view_counts }} 浏览&nbsp;&nbsp;&nbsp;
                     </span>
+                    <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                    <!-- 修改为评论的计数 -->
+                    {{ article.comments.count }}&nbsp;&nbsp;&nbsp;
                     <span style="color: blue;">
                         <i class="fa-sharp fa-solid fa-clock"></i>
                         {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
                     </span>
-                    <i class="fas fa-comments" style="color: yellowgreen;"></i>
-                    <!-- 修改为评论的计数 -->
-                    {{ article.comments.count }}&nbsp;&nbsp;&nbsp;
                 </p>
             </div>
             <hr style="width: 100%;">
