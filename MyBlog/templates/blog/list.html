@@ -72,6 +72,17 @@
                 </button>
             {% endif %}
 
+            <!-- 标签 -->
+            <span>
+                {% for tag in article.tags.all %}
+                    <a href="#"
+                       class="badge badge-secondary"
+                    >
+                        {{ tag }}
+                    </a>
+                {% endfor %}
+            </span>
+
             <!-- 标题 -->
             <h4>
                 <b>

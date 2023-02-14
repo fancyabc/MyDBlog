@@ -79,6 +79,8 @@ def article_create(request):
             if request.POST['column'] != 'none':
                 new_article.column = ArticleColumn.objects.get(id=request.POST['column'])
             new_article.save()
+
+            article_post_form.save_m2m()    # 保存 tags 的多对多关系
             return redirect("blog:article_list")
         # 如果数据不合法，返回错误信息
         else:

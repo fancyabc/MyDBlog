@@ -2,9 +2,11 @@ from django.db import models
 
 # 导入内建的User模型。
 from django.contrib.auth.models import User
-# timezone 用于处理时间相关事务。
+
 from django.utils import timezone
 from django.urls import reverse
+
+from taggit.managers import TaggableManager
 
 
 class ArticleColumn(models.Model):
@@ -23,6 +25,7 @@ class Article(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     view_counts = models.PositiveIntegerField(default=0)
+    tags = TaggableManager(blank=True)
 
     column = models.ForeignKey(
         ArticleColumn,
